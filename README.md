@@ -14,7 +14,8 @@ Después de la predicción, el programa muestra:
 - Una tarjeta descriptiva con recomendaciones de colorimetría
 
 PROCEDIMIENTO PARA LA CORRECTA EJECUCIÓN DEL PROYECTO:
-1. Es necesario descargar los 3 archivos y la carpeta de tu proyecto debe contener:
+DESCARGA LA CARPETA "PIEL"
+La carpeta contiene 3 archivos mis que colocaras dentro de tu proyecto.
   1. interfaz_piel.html
   2. Carpeta/tipos con las imágenes:
       Palida.jpg
