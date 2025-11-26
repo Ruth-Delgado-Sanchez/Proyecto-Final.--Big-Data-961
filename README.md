@@ -14,6 +14,7 @@ Después de la predicción, el programa muestra:
 - Una tarjeta descriptiva con recomendaciones de colorimetría
 
 PROCEDIMIENTO PARA LA CORRECTA EJECUCIÓN DEL PROYECTO:
+
 DESCARGA LA CARPETA "PIEL"
 La carpeta contiene 3 archivos mis que colocaras dentro de tu proyecto.
   1. interfaz_piel.html
@@ -24,8 +25,7 @@ La carpeta contiene 3 archivos mis que colocaras dentro de tu proyecto.
       Triguena.jpg
       Oscura.jpg
   3. interfaz_piel.js
-2.Arrastra la carpeta del proyecto dentro de Vs Code. Deberas ver los 2 archivos y la 
-carpeta que contiene las imagenes/tarjetas.
+2. Arrastra la carpeta del proyecto dentro de Vs Code. Deberas ver los 2 archivos y la carpeta que contiene las imagenes/tarjetas.
 3. Debes instalar la extension "Live Server" en caso de no tenerla, te permite:
   - evitar bloqueos de cámara
   - evitar restricciones de seguridad del navegador
