@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Colorimetría en Tipos de Piel</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.20.0/dist/tf.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@0.8/dist/teachablemachine-image.min.js"></script>
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: linear-gradient(135deg, #ffd1dc 0%, #ffb3c6 100%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      padding: 40px 50px;
+      border-radius: 24px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      text-align: center;
+      width: 95%;
+      max-width: 1200px;
+    }
+
+    h1 { 
+      font-size: 32px; 
+      font-weight: 700;
+      margin-bottom: 12px;
+      letter-spacing: -0.5px;
+    }
+
+    h1 .rainbow {
+      display: inline-block;
+    }
+
+    h1 .rainbow span {
+      display: inline-block;
+      animation: wave 1.5s ease-in-out infinite;
+    }
+
+    h1 .rainbow span:nth-child(1) { color: #ff6b6b; animation-delay: 0s; }
+    h1 .rainbow span:nth-child(2) { color: #ff8c42; animation-delay: 0.1s; }
+    h1 .rainbow span:nth-child(3) { color: #ffd93d; animation-delay: 0.2s; }
+    h1 .rainbow span:nth-child(4) { color: #6bcf7f; animation-delay: 0.3s; }
+    h1 .rainbow span:nth-child(5) { color: #4d9de0; animation-delay: 0.4s; }
+    h1 .rainbow span:nth-child(6) { color: #7209b7; animation-delay: 0.5s; }
+    h1 .rainbow span:nth-child(7) { color: #f72585; animation-delay: 0.6s; }
+    h1 .rainbow span:nth-child(8) { color: #ff6b6b; animation-delay: 0.7s; }
+    h1 .rainbow span:nth-child(9) { color: #ff8c42; animation-delay: 0.8s; }
+    h1 .rainbow span:nth-child(10) { color: #ffd93d; animation-delay: 0.9s; }
+    h1 .rainbow span:nth-child(11) { color: #6bcf7f; animation-delay: 1s; }
+    h1 .rainbow span:nth-child(12) { color: #4d9de0; animation-delay: 1.1s; }
+
+    @keyframes wave {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-5px); }
+    }
+
+    h1 .normal {
+      color: #1f2937;
+    }
+
+    .subtitle {
+      color: #6b7280;
+      margin-bottom: 24px;
+      font-size: 15px;
+      font-weight: 400;
+    }
+
+    button {
+      background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+      color: white;
+      border: none;
+      padding: 14px 32px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(255, 154, 158, 0.4);
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(255, 154, 158, 0.6);
+    }
+
+    button:active {
+      transform: translateY(0);
+    }
+
+    #webcam-container canvas {
+      border-radius: 20px;
+      width: 420px !important;
+      height: 320px !important;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+      border: 3px solid rgba(255,255,255,0.8);
+    }
+
+    #label-container {
+      font-size: 16px;
+      font-weight: 600;
+      margin-top: 20px;
+      padding: 16px;
+      background: linear-gradient(135deg, rgba(255, 154, 158, 0.1) 0%, rgba(254, 207, 239, 0.1) 100%);
+      border-radius: 12px;
+      color: #1f2937;
+      line-height: 1.8;
+      border: 1px solid rgba(255, 154, 158, 0.2);
+    }
+
+    #label-container strong {
+      color: #e91e63;
+    }
+
+    .result-card {
+      padding: 20px 24px;
+      border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      margin-bottom: 20px;
+      border: 2px solid rgba(255,255,255,0.5);
+      transition: transform 0.3s ease;
+    }
+
+    .result-card:hover {
+      transform: translateY(-4px);
+    }
+
+    .result-card p {
+      margin: 0;
+      line-height: 1.6;
+      font-size: 15px;
+      font-weight: 400;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+    <h1>
+      <span class="rainbow">
+        <span>C</span><span>o</span><span>l</span><span>o</span><span>r</span><span>i</span><span>m</span><span>e</span><span>t</span><span>r</span><span>í</span><span>a</span>
+      </span>
+      <span class="normal"> en Tipos de Piel</span>
+    </h1>
+    <p class="subtitle">Escanea tu rostro para identificar tu tipo de piel según tonalidad y subtono.</p>
+    <button onclick="init()">Iniciar cámara</button>
+
+    <!-- Layout en 2 columnas -->
+    <div id="layout" style="
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      gap: 50px;
+      margin-top: 30px;
+      width: 100%;
+    ">
+
+      <!-- COLUMNA IZQUIERDA (CÁMARA + TEXTO) -->
+      <div style="width: 420px;">
+        <div id="webcam-container"></div>
+        <div id="label-container" style="display: none;"></div>
+      </div>
+
+      <!-- COLUMNA DERECHA (RESULTADOS) -->
+      <div style="width: 400px; display: none;" id="results-column">
+        <img id="skin-image" src="" style="
+          width: 100%;
+          max-width: 400px;
+          display: none;
+          border-radius: 15px;
+          box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+          margin-bottom: 20px;
+        ">
+        
+        <div id="result-card"></div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    const URL = "https://teachablemachine.withgoogle.com/models/vxi5dNUK0/";
+
+    let model, webcam, labelContainer, maxPredictions;
+
+    async function init() {
+      const modelURL = URL + "model.json";
+      const metadataURL = URL + "metadata.json";
+
+      model = await tmImage.load(modelURL, metadataURL);
+      maxPredictions = model.getTotalClasses();
+
+      const flip = true;
+      webcam = new tmImage.Webcam(420, 320, flip);
+
+      await webcam.setup({ facingMode: "user" });
+      await webcam.play();
+
+      document.getElementById("webcam-container").innerHTML = "";
+      document.getElementById("webcam-container").appendChild(webcam.canvas);
+
+      labelContainer = document.getElementById("label-container");
+      labelContainer.style.display = "block";
+
+      loop();
+    }
+
+    function loop() {
+      webcam.update();
+      predict();
+      requestAnimationFrame(loop);
+    }
+
+    async function predict() {
+      const prediction = await model.predict(webcam.canvas);
+
+      let resultado = prediction.sort((a, b) => b.probability - a.probability)[0];
+
+      labelContainer.innerHTML =
+        "<strong>Tipo de piel:</strong> " + resultado.className +
+        "<br><strong>Confianza:</strong> " + (resultado.probability * 100).toFixed(2) + "%";
+
+      const card = document.getElementById("result-card");
+      const resultsColumn = document.getElementById("results-column");
+
+      const tarjetas = {
+        "Tonos pálidos":
+          `<div class="result-card" style="background: linear-gradient(135deg, #ffe4e9 0%, #ffd1dc 100%);">
+            <p style="color: #4a5568;">Tu piel pertenece a tonos muy claros. Recomendación: colores suaves como rosa pastel, beige, lavanda y tonos fríos.</p>
+          </div>`,
+
+        "Tonos claros":
+          `<div class="result-card" style="background: linear-gradient(135deg, #ffe4e9 0%, #ffd1dc 100%);">
+            <p style="color: #4a5568;">Tu tono combina bien con colores fríos y neutros. Ideal: azul, verde menta, plata, rosa.</p>
+          </div>`,
+
+        "Tonos dorados":
+          `<div class="result-card" style="background: linear-gradient(135deg, #ffe4e9 0%, #ffd1dc 100%);">
+            <p style="color: #4a5568;">Tonos cálidos y dorados te favorecen mucho. Usa amarillos, terracotas, dorado y verde oliva.</p>
+          </div>`,
+
+        "Tonos trigueños - caramelo":
+          `<div class="result-card" style="background: linear-gradient(135deg, #ffe4e9 0%, #ffd1dc 100%);">
+            <p style="color: #4a5568;">Los colores vibrantes resaltan tu piel. Recomendación: coral, vino, turquesa y tonos tierra oscuros.</p>
+          </div>`,
+
+        "Tonos oscuros":
+          `<div class="result-card" style="background: linear-gradient(135deg, #ffe4e9 0%, #ffd1dc 100%);">
+            <p style="color: #4a5568;">Los tonos intensos y contrastantes son perfectos: amarillo brillante, rojo, morado profundo y dorado.</p>
+          </div>`
+      };
+
+      card.innerHTML = tarjetas[resultado.className] || "";
+
+      const img = document.getElementById("skin-image");
+
+      const imagenes = {
+        "Tonos pálidos": "tipos/Palida.jpg",
+        "Tonos claros": "tipos/Clara.jpg",
+        "Tonos dorados": "tipos/Dorada.jpg",
+        "Tonos trigueños - caramelo": "tipos/Triguena.jpg",
+        "Tonos oscuros": "tipos/Oscura.jpg"
+      };
+
+      img.src = imagenes[resultado.className] || "";
+      img.style.display = img.src ? "block" : "none";
+      
+      resultsColumn.style.display = "block";
+    }
+  </script>
+
+</body>
+</html>
