@@ -30,10 +30,9 @@ carpeta que contiene las imagenes/tarjetas.
    - evitar restricciones de seguridad del navegador
   - ejecutar el modelo sin errores
 4. Ejecuta el archivo HTML con Live Server 
-    1. Clic derecho sobre interfaz_piel.html
-    2. Seleccionar Open with Live Server
-    El navegador abrirá una URL similar a:
-    http://127.0.0.1:5500/
+  - Clic derecho sobre interfaz_piel.html
+  - Seleccionar Open with Live Server
+  - El navegador abrirá una URL similar a: http://127.0.0.1:5500/
 5. Permitir el uso de la camara: El navegador te pedirá autorización, selecciona "Permitir" para que el modelo pueda analizar tu rostro.
 6. Visualización del resultado. Si todo está correctamente configurado, verás:
   - La cámara funcionando
