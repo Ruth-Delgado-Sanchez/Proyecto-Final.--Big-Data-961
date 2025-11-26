@@ -26,8 +26,8 @@ PROCEDIMIENTO PARA LA CORRECTA EJECUCIÓN DEL PROYECTO:
 2.Arrastra la carpeta del proyecto dentro de Vs Code. Deberas ver los 2 archivos y la 
 carpeta que contiene las imagenes/tarjetas.
 3. Debes instalar la extension "Live Server" en caso de no tenerla, te permite:
-   - evitar bloqueos de cámara
-   - evitar restricciones de seguridad del navegador
+  - evitar bloqueos de cámara
+  - evitar restricciones de seguridad del navegador
   - ejecutar el modelo sin errores
 4. Ejecuta el archivo HTML con Live Server 
   - Clic derecho sobre interfaz_piel.html
